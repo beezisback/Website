@@ -1,0 +1,290 @@
+/*Css By Azer, Copyright 2011 Azer Cms. All Rights Reserved.*/
+body
+{
+margin:0px;
+font-family: Verdana, Arial, Helvetica, sans-serif;
+background:#4c4c4c url(../images/banner.jpg) top center no-repeat;
+font-size:11px;
+color:#727272;
+}
+
+body a
+{
+color:#506377;
+text-decoration:underline;
+}
+
+.menu
+{
+width:1000px;
+height:53px;
+margin-left:auto;
+margin-right:auto;
+background:url(../images/menu.png);
+margin-top:360px;
+/*border-bottom:3px solid #506377;*/
+}
+
+.menu input#left
+{
+width:100px;
+height:53px;
+background:url(../images/button-left.png);
+border:none;
+color:#506377;
+cursor:pointer;
+margin-right:-7px;
+}
+
+.menu input#left:hover
+{
+color:black;
+background:url(../images/hover-left.png);
+}
+
+.menu input#mid
+{
+width:100px;
+height:53px;
+background:url(../images/button-mid.png);
+border:none;
+/*color:#506377;*/
+color:#506377;
+cursor:pointer;
+margin-right:-5px;
+}
+
+.menu input#mid:hover
+{
+color:black;
+background:url(../images/hover-mid.png);
+}
+
+.body
+{
+width:998px;
+min-height:105px;
+max-height:auto;
+margin-left:auto;
+margin-right:auto;
+border-left:1px solid #506377;
+border-right:1px solid #506377;
+border-bottom:1px solid #506377;
+background:#979797 url(../images/back.jpg) repeat-x;
+}
+
+.left-bar
+{
+width:720px;
+height:33px;
+background:url(../images/left-bar.png);
+color:white;
+font-size:12px;
+}
+
+.left-mid
+{
+width:720px;
+min-height:175px;
+max-height:auto;
+background:url(../images/left-mid.png) repeat-y;
+color:#727272;
+}
+
+.left-mid-box
+{
+width:720px;
+min-height:175px;
+max-height:auto;
+background:url(../images/left-mid-box.png) repeat-y;
+color:#727272;
+}
+
+.left-foot
+{
+width:720px;
+height:13px;
+background:url(../images/left-foot.png);
+}
+
+.left-foot-box
+{
+width:720px;
+height:13px;
+background:url(../images/left-foot-box.png);
+}
+
+.left-highlight
+{
+width:170px;
+height:100px;
+background:url(../images/left-highlight.png);
+margin-left:-1px;
+margin-top:-3px;
+text-align:center;
+color:#506377;
+}
+
+.left-space
+{
+padding:8px;
+}
+
+.news-avatar
+{
+width:65px;
+height:65px;
+margin-top:20px;
+-moz-box-shadow:0px 0px 15px black;
+box-shadow:0px 0px 15px black;
+-webkit-box-shadow:0px 0px 15px black;
+}
+
+.right-hand
+{
+width:265px;
+height:141px;
+background:url(../images/hand-top.png);
+margin-top:-14px;
+margin-left:-14px;
+z-index:1;
+}
+
+.main
+{
+padding:0px;
+margin:0px;
+border-collapse:collapse;
+margin-left:0px;
+}
+
+.main td#main
+{
+padding:0px;
+margin:0px;
+padding-left:5px;
+}
+
+.membership
+{
+color:white;
+padding-left:55px;
+padding-top:117px;
+font-size:12px;
+}
+
+.right-mid
+{
+width:257px;
+min-height:25px;
+max-height:auto;
+background:url(../images/right-mid.png) repeat-y;
+color:#727272;
+margin-left:-6px;
+}
+
+.right-foot
+{
+width:257px;
+height:13px;
+background:url(../images/right-foot.png);
+margin-left:-6px;
+}
+
+.right-pad
+{
+padding:4px;
+}
+
+.right-bar
+{
+width:257px;
+height:33px;
+background:url(../images/right-bar.png);
+font-size:12px;
+color:white;
+margin-left:-6px;
+}
+
+.login
+{
+width:70px;
+height:45px;
+background:url(../images/button.png);
+border:none;
+color:#506377;
+cursor:pointer;
+border:1px solid black;
+margin-top:-4px;
+}
+
+.login:hover
+{
+background:url(../images/button-hover.png);
+}
+
+#login
+{
+background:#1b1b1b url(../images/login.png);
+border:1px solid black;
+color:#506377;
+}
+
+.shout
+{
+width:235px;
+max-width:235px;
+height:100px;
+max-height:100px;
+background:#1b1b1b url(../images/shout-back.png);
+border:1px solid black;
+color:#506377;
+}
+
+.post-shout
+{
+width:70px;
+height:30px;
+background:url(../images/button.png);
+border:none;
+color:#506377;
+cursor:pointer;
+border:1px solid black;
+}
+
+.post-shout:hover
+{
+background:url(../images/button-hover.png);
+}
+
+.realm-1
+{
+width:240px;
+border:1px solid black;
+height:5px;
+position:relative;
+margin-left:5px;
+}
+
+.realm-2
+{
+position:absolute;
+z-index:50;
+width:100%;
+height:5px;
+}
+
+.foot
+{
+width:998px;
+height:30px;
+text-align:center;
+color:#506377;
+}
+
+#unstuck
+{
+background:#1b1b1b;
+border:1px solid black;
+color:#506377;
+}

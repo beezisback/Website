@@ -1,0 +1,16 @@
+#IndexTextFader {
+	width:717px; height:152px;
+	position:absolute;
+	left:300px; top:215px;
+	z-index:999;
+	}
+	.ForumsTextFader#IndexTextFader {
+	width:717px; height:152px;
+	position:absolute;
+	left:320px; top:120px;
+	z-index:999;
+	}
+	
+#IndexTextFader a {
+	width:717px; height:152px;
+	}

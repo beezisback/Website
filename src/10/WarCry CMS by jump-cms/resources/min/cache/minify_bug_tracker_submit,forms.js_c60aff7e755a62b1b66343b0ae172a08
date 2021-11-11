@@ -1,0 +1,102 @@
+var BT_CAT_WEBSITE=1;var BT_CAT_WOTLK_CORE=2;var LastdMainCat=false;var LastCat=false;function showCategories(e)
+{var $this=$(e);var selected=$this.find('option[selected="selected"]');var mainCategory=selected.val();if(mainCategory==0)
+{return false;}
+WarcryQueue('BUGTRACKER').add(function()
+{$('#category-select').fadeOut('fast',function()
+{$('#category-select').find('select').detach();$('#category-select').find('.js-select').detach();WarcryQueue('BUGTRACKER').goNext();});$('#subcategory-select').fadeOut('fast',function()
+{$('#subcategory-select').find('select').detach();$('#subcategory-select').find('.js-select').detach();});LastCat=false;});WarcryQueue('BUGTRACKER').add(function()
+{$('#category-select').css({opacity:0,display:'inline-block'});if(typeof $(document).data('BTCats'+mainCategory)=='undefined')
+{$.ajax({type:"GET",url:$BaseURL+"/ajax.php?phase=13",data:{category:mainCategory},dataType:'json',cache:false,error:function(jqXHR,textStatus,errorThrown)
+{console.log(textStatus);},success:function(data)
+{$(document).data('BTCats'+mainCategory,data);WarcryQueue('BUGTRACKER').goNext();}});}
+else
+{WarcryQueue('BUGTRACKER').goNext();}});WarcryQueue('BUGTRACKER').add(function()
+{var data=$(document).data('BTCats'+mainCategory);var newSelect=$('<select id="sub-cat-select" name="category" onchange="return showSubCategories(this);"><option selected="selected" disabled="disabled">Select sub-category</option></select>');$('#category-select').append(newSelect);$.each(data,function(k,v)
+{$(newSelect).append('<option value="'+k+'">'+v.name+'</option>');});$(newSelect).SelectTransform();$('#category-select').animate({opacity:1},'fast',function()
+{WarcryQueue('BUGTRACKER').goNext();});});WarcryQueue('BUGTRACKER').goNext();LastdMainCat=mainCategory;return true;}
+function showSubCategories(e)
+{var $this=$(e);var mainCategory=LastdMainCat;var selected=$this.find('option[selected="selected"]');var category=selected.val();var data=$(document).data('BTCats'+mainCategory);WarcryQueue('BUGTRACKER').add(function()
+{$('#subcategory-select').fadeOut('fast',function()
+{$('#subcategory-select').find('select').detach();$('#subcategory-select').find('.js-select').detach();WarcryQueue('BUGTRACKER').goNext();});LastCat=false;});WarcryQueue('BUGTRACKER').add(function()
+{$('#subcategory-select').css({opacity:0,display:'inline-block'});$.each(data,function(k,v)
+{if(k==category)
+{if(v.subcats!==false)
+{var newSelect=$('<select id="select-class" name="subcategory"><option selected="selected" disabled="disabled">Select specifics</option></select>');$('#subcategory-select').append(newSelect);$.each(v.subcats,function(key,value)
+{$(newSelect).append('<option value="'+key+'">'+value+'</option>');});$(newSelect).SelectTransform();$('#subcategory-select').animate({opacity:1},'fast');}}});});WarcryQueue('BUGTRACKER').goNext();return true;};function restoreFormData(formName,data)
+{var thisForm=$(document).find('form[name="'+formName+'"]');$.each(data,function(key,value)
+{var element=$(thisForm).find('[name="'+key+'"]');if(typeof value=='object')
+{restoreFormData_withKey(formName,value,key);return;}
+if(element.length>0)
+{var elementType=element.get(0).tagName;}
+else
+{element=$(thisForm).find('[name*="'+key+'"]');if(element.length>0)
+{var elementType=element.get(0).tagName;}}
+if(elementType=='INPUT')
+{if($(element).attr('type')=='checkbox')
+{element.each(function(i,e)
+{if($(e).attr('type')=='checkbox')
+{if(typeof value=='object')
+{$.each(value,function(k,v)
+{if(e.checked==false)
+{if($(e).attr('name').indexOf(k)>-1)
+{e.checked=true;$(e).trigger('change');}}});}
+else
+{if(e.checked==false)
+{if($(e).attr('name').indexOf(value)>-1)
+{e.checked=true;$(e).trigger('change');}}}}});}
+else if($(element).attr('type')=='radio')
+{var $radioElements=$(element);var $radioValue=value;$(document).ready(function()
+{$radioElements.each(function(i,e)
+{if($(e).val()==$radioValue)
+{if(e.checked==false)
+{$(e).attr('checked',true);setTimeout(function(){$(e).trigger('click');},1000);}}
+else
+{$(e).removeAttr("checked");}});});}
+else if($(element).attr('type')=='text'||$(element).attr('type')=='hidden')
+{element.val(value);element.trigger('change');}
+else
+{console.log("Form Data Restoration: Undefined Input type \""+$(element).attr('type')+"\".");}}
+else if(elementType=='TEXTAREA')
+{element.html(value);$(element).trigger('change');}
+else if(elementType=='SELECT')
+{$(element).find('option[selected="selected"]').attr('selected',null);var option=$(element).find('option[value="'+value+'"]');option.attr("selected","selected");$(element).trigger('change');}
+else
+{console.log("Form Data Restoration: Undefined element type \""+elementType+"\", field name: \""+key+"\".");}});}
+function restoreFormData_withKey(formName,data,prefix)
+{var thisForm=$(document).find('form[name="'+formName+'"]');$.each(data,function(key,value)
+{var element=$(thisForm).find('[name="'+prefix+'['+key+']"]');if(element.length>0)
+{var elementType=element.get(0).tagName;}
+else
+{element=$(thisForm).find('[name*="'+key+'"]');if(element.length>0)
+{var elementType=element.get(0).tagName;}}
+if(elementType=='INPUT')
+{if($(element).attr('type')=='checkbox')
+{element.each(function(i,e)
+{if($(e).attr('type')=='checkbox')
+{if(typeof value=='object')
+{$.each(value,function(k,v)
+{if(e.checked==false)
+{if($(e).attr('name').indexOf(k)>-1)
+{e.checked=true;}}});}
+else
+{if(e.checked==false)
+{if($(e).attr('name').indexOf(value)>-1)
+{e.checked=true;}}}}});}
+else if($(element).attr('type')=='radio')
+{var $radioElements=$(element);var $radioValue=value;$(document).ready(function()
+{$radioElements.each(function(i,e)
+{if($(e).val()==$radioValue)
+{if(e.checked==false)
+{$(e).attr('checked',true);console.log("checking input: "+$radioValue);}}
+else
+{$(e).removeAttr("checked");}});});}
+else if($(element).attr('type')=='text'||$(element).attr('type')=='hidden')
+{element.val(value);element.trigger('change');}
+else
+{console.log("Form Data Restoration: Undefined Input type \""+$(element).attr('type')+"\".");}}
+else if(elementType=='TEXTAREA')
+{element.html(value);}
+else if(elementType=='SELECT')
+{var option=$(element).find('option[value="'+value+'"]');option.attr("selected","selected");}
+else
+{console.log("Form Data Restoration: Undefined element type \""+elementType+"\".");}});}

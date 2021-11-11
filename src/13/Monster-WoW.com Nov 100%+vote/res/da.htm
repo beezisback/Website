@@ -1,0 +1,476 @@
+
+<script type="text/javascript" language="javascript" src="https://www.molten-wow.com/script/molten.js?1"></script>
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://www.molten-wow.com/script/jquery.cycle.lite.js"></script>
+
+
+
+            <div class="page"><script type="text/javascript" language="javascript" src="https://www.molten-wow.com/script/dropdown/js/jquery.dd.js?1060"></script>
+<link rel="stylesheet" type="text/css" href="https://www.molten-wow.com/script/dropdown/dropdown.css?1060" />
+<script type="text/javascript">
+var loading = true;
+var web = "https://www.molten-wow.com/";
+var versionType = "2";
+var realm = "6";
+var realms = [
+	[0, 'a', 'NELTHARION', 3],
+	[1, 'b', 'DEATHWING', 2],
+	[2, 'g', 'SARGERAS', 3],
+	[3, 'd', 'FROSTWOLF', 3],
+	[4, 'e', 'WARSONG', 3],
+	[5, 'z', 'LORDAERON', 2],
+	[6, 'et', 'RAGNAROS', 2]
+];
+var par = 0;
+var pars = [
+    [0, 'p', 'DONATE'],
+    [1, 'v', 'VOTE'],
+    [2, 't', 'TOOLS']
+];
+var child = [0, 0];
+var slide = 0;
+var children = {
+    'p': {
+        0: [
+            [0, 'd', 'DONATE'],
+			[1, 'le', 'LEVEL UP'],
+            /*[2, 'i', 'ITEMS'],*/
+            [2, 'rt', 'TRANSFER'],
+			[3, 'fc', 'FACTION CHANGE']
+        ],
+        1: [
+			/*[0, 'is', 'ARMOR SETS'],*/
+			[0, 'rc', 'RACE CHANGE'],
+			[1, 're', 'RECUSTOMIZATION']
+        ]
+    },
+    'v': {
+        0: [
+            [0, 'v', 'VOTE'],
+            /*[1, 'i', 'ITEMS'],*/
+			[1, 'rt', 'TRANSFER'],
+			[2, 'fc', 'FACTION CHANGE'],
+            [3, 'nc', 'NAME CHANGE']
+        ]
+    },
+    't': {
+        0: [
+			[0, 'lo', 'LOTTERY'],
+            [1, 'te', 'UNSTUCK'],
+			[2, 'cr', 'RESTORATION'],
+            [3, 'st', 'SETTINGS'],
+			[4, 'hi', 'HISTORY']
+        ]
+    }
+};
+var init = true;
+var panchor = null;
+var miscv = 0;
+
+function ds(id) {
+    return document.getElementById(id);
+}
+function rm(c) {
+    if (c.className != undefined) {
+        c.className = c.className.replace(/\bactive\b /, '')
+    }
+}
+function IsNumeric(input) {
+    var RE = /^-{0,1}\d*\.{0,1}\d+$/;
+    return (RE.test(input))
+}
+function loadStart(state) {
+    if (state) {
+        loading = true;
+    }
+    if (!state) {
+        loading = false;
+    }
+}
+function loadFailure() {
+    
+}
+function parseScript(_source) {
+    var source = _source;
+    var scripts = new Array();
+    while (source.indexOf("<script") > -1 || source.indexOf("</script") > -1) {
+        var s = source.indexOf("<script");
+        var s_e = source.indexOf(">", s);
+        var e = source.indexOf("</script", s);
+        var e_e = source.indexOf(">", e);
+        scripts.push(source.substring(s_e + 1, e));
+        source = source.substring(0, s) + source.substring(e_e + 1)
+    }
+    for (var i = 0; i < scripts.length; i++) {
+        try {
+            var oScript = document.createElement('script');
+            oScript.text = scripts[i];
+            document.getElementById("pageWrap").appendChild(oScript)
+        } catch (ex) {
+            alert(ex)
+        }
+    }
+    return source
+}
+function loadPage() {
+    if (loading && init || !loading) {
+        if (child[1] != -1) {
+            panchor = realms[realm][0] + ':' + pars[par][0] + ':' + slide + ':' + children[pars[par][1]][slide][child[1]][1] + ':' + miscv;
+            var q = '/' + panchor + '/';
+            loadStart(true);
+            $("#noteTop").html("");
+			document.onkeypress = handleEnter;
+            var pg = $.get("/account/pg" + q, function (data) {}).success(function (data) {
+                var c = data.split(">>");
+                if (c[0] == "SUCCESS") {
+                    $("#pageWrap").html("<br />" + parseScript(c[1]) + "<br />");
+                } else {
+                    $("#pageWrap").html("<br /><br />");
+                    if (c[1] == undefined) {
+                        window.location.href = web
+                    } else {
+                       alert(c[1]);
+                    }
+                }
+            }).error(function () {
+                loadStart(false)
+            }).complete(function () {
+                loadStart(false);
+                reSetup()
+            })
+        } else {
+            $("#pageWrap").html("<br /><br />")
+        }
+        init = false
+    } else {
+        loadFailure()
+    }
+}
+function updateCurrency() {
+    $.get("/account/cur/", function (data) {}).success(function (data) {
+        if (data.length <= 7) {
+            var d = data.split(":");
+            $("#accCoins").html(d[0]);
+            $("#accPoints").html(d[1])
+        }
+    }).error(function () {}).complete(function () {})
+}
+function reSetup() {
+    if (child[1] != -1) {
+        var t = children[pars[par][1]][slide][child[1]][1];
+        if (t == 'i' || 'is' || 'd' || 'fc') {
+            $("#pageWrap select").msDropDown()
+        }
+    }
+}
+function versionSet(id){
+	if(id == versionType){
+		return;
+	}
+	$("#v2").removeClass("active");
+	$("#vW2").removeClass("active");
+	$("#v3").removeClass("active");
+	$("#vW3").removeClass("active");
+	$("#v"+id).addClass("active");
+	$("#vW"+id).addClass("active");
+	var arLen = realms.length;
+	for (var i = 0, len = arLen; i < len; ++i) {
+		if(realms[i][3] == id){
+			$("#rW"+realms[i][0]).show();
+		}else{
+			$("#rW"+realms[i][0]).hide();
+		}
+	}
+	versionType = id;
+}
+			
+	
+function rSelect(id) {
+    var ol = realm;
+    if (id != realm || realm == 0 || loading) {
+		$("#r"+realm).removeClass("active");
+		$("#rW"+realm).removeClass("active");
+		$("#r"+id).addClass("active");
+		$("#rW"+id).addClass("active");
+        realm = id;
+        if (!init) {
+            if (id != ol) {
+                loadPage()
+            }
+        }
+    }
+}
+function pSelect(id) {
+    var ol = par;
+    if (id != par|| loading) {
+		$("#p"+par).removeClass("active");
+		$("#pW"+par).removeClass("active");
+		$("#p"+id).addClass("active");
+		$("#pW"+id).addClass("active");
+        par = id;
+        if (!init) {
+            if (id != ol) {
+                slide = 0;
+                child = [0, 0];
+                genChildList("cBtns");
+				checkArrows();
+                loadPage()
+            }
+        }
+    }
+}
+function cSelect(id, change) {
+    var ol = child[1];
+    if (child[1] > -1) {
+		$("#cW"+child[1]).removeClass("active");
+		$("#cW"+id).addClass("active");
+    }
+    child = [slide, id];
+    if (!init) {
+        if (id != ol) {
+            loadPage()
+        }
+    }
+}
+function genRealmList(c) {
+    var d = "";
+	var g = "";
+    $("#"+c).html("");
+    var arLen = realms.length;
+	var sorting = [5,1,6,3,0,2,4];
+    for (var i = 0, len = arLen; i < len; ++i) {
+		if(i==0){
+			g = "style='margin-left:-1px;'";
+		}
+		if(i==3){
+			g = "margin-left:-1px;";
+		}
+
+		if(realms[sorting[i]][3] == versionType){
+        	d += "<div class=\"rTabWrap\" "+g+" id=\"rW" + realms[sorting[i]][0] + "\"><div class=\"rTab\" id=\"r" + realms[sorting[i]][0] + "\"><p>"+realms[sorting[i]][2]+"</p></div></div>";
+		}else{
+			d += "<div class=\"rTabWrap\" style=\"display:none;"+g+"\" id=\"rW" + realms[sorting[i]][0] + "\"><div class=\"rTab\" id=\"r" + realms[sorting[i]][0] + "\"><p>"+realms[sorting[i]][2]+"</p></div></div>";
+		}
+		g = "";
+    }
+	$("#"+c).html(d);
+    rSelect(realm)
+}
+function genParList(c) {
+	var d = "";
+    $("#"+c).html("");
+    var arLen = pars.length;
+    for (var i = 0, len = arLen; i < len; ++i) {
+        d += "<div class=\"pTabWrap\" id=\"pW" + pars[i][0] + "\"><div class=\"pTab\" id=\"p" + pars[i][0] + "\"><p>"+pars[i][2]+"</p></div></div>"
+    }
+	$("#"+c).html(d);
+    pSelect(par)
+}
+function genChildList(c) {
+    var gp = pars[par][1];
+    if (children[gp][slide] != undefined) {
+        var arLen = children[gp][slide].length;
+        var d = "<ul>";
+        $("#"+c).html("");
+        var cs = 100000;
+        for (var i = 0, len = arLen; i < len; ++i) {
+            cs = cs - 1;
+			if(i == 0){
+
+			}else{
+				d += "<li class=\"square\">&nbsp;&nbsp;</li>";
+			}
+            d += "<li id=\"c" + children[gp][slide][i][0] + "\" class=\"dc\"><a href=\"javascript:void(0);\" id=\"cW" + children[gp][slide][i][0] + "\" class=\"\">"+children[gp][slide][i][2]+"</a></li>"
+        }
+        d += "</ul>";
+        $("#"+c).html(d);
+        cSelect(child[1], true)
+    }
+}
+function checkArrows() {
+	var gp = pars[par][1];
+    var ns = Number(slide) - Number(1);
+	var na = Number(slide) + Number(1);
+	var la = ds("lArr");
+	var ra = ds("rArr");
+
+	if(children[gp][ns] != undefined) {
+		$("#lArr").addClass("active");
+    }else{
+		$("#lArr").removeClass("active");
+	}
+	
+	if(children[gp][na] != undefined) {
+		$("#rArr").addClass("active");
+    }else{
+		$("#rArr").removeClass("active");
+	}
+}
+
+var currentp = null;
+
+function deURL(c) {
+    if (c.length > 8) {
+
+        var e = c.split('#');
+        var s = e[1].split(':');
+        if (IsNumeric(s[0])) {
+            if (realms[s[0]] != undefined) {
+                var pass1 = true;
+                if (IsNumeric(s[1])) {
+                    if (pars[s[1]] != undefined) {
+                        var pass2 = true;
+                        if (IsNumeric(s[2]) && IsNumeric(s[3])) {
+                            if (children[pars[s[1]][1]][s[2]] != undefined) {
+                                var pass3 = true;
+                                if (children[pars[s[1]][1]][s[2]][s[3]] != undefined) {
+                                    var pass4 = true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (pass1 && pass2 && pass3 && pass4) {
+			$("#r"+realm).removeClass("active");
+			$("#rW"+realm).removeClass("active");
+			realm = s[0];
+			$("#r"+realm).addClass("active");
+			$("#rW"+realm).addClass("active");
+			$("#p"+par).removeClass("active");
+			$("#pW"+par).removeClass("active");
+			par = s[1];
+			$("#p"+par).addClass("active");
+			$("#pW"+par).addClass("active");
+            slide = s[2];
+            child = [s[2], s[3]];
+            miscv = s[5];
+            genChildList("cBtns");
+			checkArrows();
+			versionSet(realms[realm][3]);
+            window.location = "/account/#self";
+            return true
+        }
+    }
+    return false
+}
+
+function handleEnter(evt) {
+    var evt = (evt) ? evt : ((event) ? event : null);
+    var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+    if ((evt.keyCode == 13)) {
+        return false;
+    }
+}
+function handleEnterItems(evt) {
+    var evt = (evt) ? evt : ((event) ? event : null);
+    var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+    if ((evt.keyCode == 13)) {
+        return validateSearchItem();
+    }
+}
+function checkAnchor() {
+    if (!loading) {
+        if (currentp != document.location.hash) {
+            currentp = document.location.hash;
+            if (currentp) {
+                if (deURL(currentp)) {
+                    loadPage();
+                    miscv = 0;
+                }
+            }
+        }
+    }
+}
+$(document).ready(function () {
+	versionSet(realms[realm][3]);
+    genRealmList("rBtns");
+    genParList("pBtns");
+    genChildList("cBtns");
+	checkArrows();
+    loadPage();
+    setInterval("checkAnchor()", 200);
+	
+	$("div.vTab").hover(function () {
+    }).click(function () {
+		if (!loading) {
+            var id = this.id[1];
+            versionSet(id);
+            if (id == 2) {
+                window.location = '/account/#1:' + par + ':' + slide + ':' + child[1] + ':0';
+            } else {
+                window.location = '/account/#0:' + par + ':' + slide + ':' + child[1] + ':0';
+            }
+        } else {
+            loadFailure();
+        }
+    });
+	
+    $("div.rTab").hover(function () {
+
+    }).click(function () {
+        if (!loading) {
+            var id = this.id[1];
+            rSelect(id);
+        } else {
+            loadFailure();
+        }
+    });
+    $("div.pTab").hover(function () {
+
+    }).click(function () {
+        if (!loading) {
+            var id = this.id[1];
+            pSelect(id);
+        } else {
+            loadFailure();
+        }
+    });
+    $("div#cBtns li.dc").live('hover', function () {
+        if (child[1] != -1) {
+
+        }
+    }).live('mouseleave', function () {
+        if (child[1] != -1) {
+			$("#cW"+child[1]).addClass("active");
+        }
+    }).live('click', function () {
+        if (!loading) {
+            var id = this.id[1];
+            cSelect(id);
+        } else {
+            loadFailure();
+        }
+    });
+    $("div.rArr").live('click', function () {
+        if (!loading) {
+            var gp = pars[par][1];
+            var ns = Number(slide) + Number(1);
+            if (slide < 3 && children[gp][ns] != undefined) {
+                slide = ns;
+                child = [slide, -1];
+                genChildList("cBtns");
+				checkArrows();
+            }
+        } else {
+            loadFailure();
+        }
+    });
+    $("div.lArr").live('click', function () {
+        if (!loading) {
+            var gp = pars[par][1];
+            var ns = Number(slide) - Number(1);
+            if (slide > 0 && children[gp][ns] != undefined) {
+                slide = ns;
+                child = [slide, -1];
+                genChildList("cBtns");
+				checkArrows();
+            }
+        } else {
+            loadFailure();
+        }
+    });
+});
+</script>
+<div id="pageWrap"><br><div align="center"><span style="font-size:20px; font-weight:bold; color:#ffffcc;"><span style="color:#99cc00;">UNSTUCK</span> YOUR CHARACTER</span><br><div align="center" style="color:#FF0000;" id="error"></div><div align="center" style="color:#99CC00;" id="success"></div><br><form method="post" action="" name="Teleport" id="Teleport"><table align="center"><tbody><tr><td><div style="height:0px;overflow:hidden;position:absolute;" id="charname_msddHolder"><select name="charname" id="charname" style="width:200px;"><option value=""> - SELECT CHARACTER - </option><option title="/images/races/6-0.gif" value="Mitrele">Mitrele</option></select></div><div id="charname_msdd" class="dd" style="width: 198px; "><div id="charname_title" class="ddTitle"><span id="charname_arrow" class="arrow" style="background-position: 0px 0px; "></span><span class="textTitle" id="charname_titletext"> - SELECT CHARACTER - </span></div><div id="charname_child" class="ddChild" style="width: 196px; z-index: 0; display: none; "><a href="javascript:void(0);" class="selected enabled" style="undefined" id="charname_msa_0"> - SELECT CHARACTER - </a><a href="javascript:void(0);" class="enabled" style="undefined" id="charname_msa_1"><img src="./Molten   Wrath of the Lich King and Cataclysm Private Server_files/6-0.gif" align="left"> Mitrele</a></div></div></td><td align="center"><div class="cpBtn select" onclick="return validateTele(&#39;u&#39;);" style="width:70px; height:26px;"><p>UNSTUCK</p></div></td></tr><tr><td height="8"></td></tr><tr><td><select id="teleplace" name="teleplace" style="width:200px;"><option value=""> - SELECT LOCATION - </option><option value="0">--Alliance--</option><option value="1">Stormwind</option><option value="2">Ironforge</option><option value="3">Darnassus</option><option value="4">The Exodar</option><option value="5">Valiance Keep</option><option value="0">--Horde--</option><option value="6">Orgrimmar</option><option value="7">Thunder Bluff</option><option value="8">Undercity</option><option value="9">Silvermoon</option><option value="10">Warsong Hold</option><option value="0">--Neutral--</option><option value="11">Shattrath</option><option value="12">Dalaran</option></select></td></tr></tbody></table></form><div style="width:444px; margin:22px 0; text-align:left"> </div>

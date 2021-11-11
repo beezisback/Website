@@ -1,0 +1,177 @@
+(function($)
+{var $lastClickedArmorset=0;var $lastSelectedCharacter=0;var $IsReadyToComplete=false;var $SelectedArmorsetPrice=0;var methods={defaults:{currentPage:0,totalPages:0,perPage:6,totalRecords:0,realm:1,source:'old',filter:{category:0,character:''},isLoading:false,alertBox:{isLoaded:false,},},init:function(options)
+{var $this=$(this);if($this.length<1)
+{return;}
+if(typeof $this.data('WarcryArmorsets')=='undefined')
+{$this.data('WarcryArmorsets',{config:null});$this.data('WarcryArmorsets').config=$.extend({},methods.defaults,config);}
+else
+{$this.data('WarcryArmorsets').config=$.extend({},$this.data('WarcryArmorsets').config,config);}
+var config=$this.data('WarcryArmorsets').config;if(typeof options.currentPage!='undefined')
+{config.currentPage=options.currentPage;}
+if(typeof options.totalPages!='undefined')
+{config.totalPages=options.totalPages;}
+if(typeof options.perPage!='undefined')
+{config.perPage=options.perPage;}
+if(typeof options.totalRecords!='undefined')
+{config.totalRecords=options.totalRecords;}
+if(typeof options.filter!='undefined')
+{config.filter=options.filter;}
+if(typeof options.realm!='undefined')
+{config.realm=options.realm;}
+if(typeof options.source!='undefined')
+{config.source=options.source;}
+$('#pagination-nav-first > a').on('click',function()
+{$this.WarcryArmorsets('loadPage','first');return false;});$('#pagination-nav-prev > a').on('click',function()
+{$this.WarcryArmorsets('loadPage','prev');return false;});$('#pagination-nav-next > a').on('click',function()
+{$this.WarcryArmorsets('loadPage','next');return false;});$('#pagination-nav-last > a').on('click',function()
+{$this.WarcryArmorsets('loadPage','last');return false;});$('#character-select').on('change',function()
+{var selected=$('#character-select').find('option:selected');if(selected.length>0)
+{if(selected.val()!=''&&selected.val()!='0')
+{$lastSelectedCharacter=selected.val();$('#selected-character').val($lastSelectedCharacter);}}
+if($lastSelectedCharacter!=''&&$lastSelectedCharacter!=0)
+{WarcryQueue('ARMORSETS').add(function()
+{if($('.armor-set-prepurchase-info').css('display')=='none')
+{$('#armorsets-starting-message').fadeOut('fast',function()
+{$('.armor-set-prepurchase-info').fadeIn('fast');WarcryQueue('ARMORSETS').goNext();});}
+else
+{WarcryQueue('ARMORSETS').goNext();}});WarcryQueue('ARMORSETS').add(function()
+{$this.WarcryArmorsets('applyFilter',{category:config.filter.category,character:$lastSelectedCharacter});});WarcryQueue('ARMORSETS').goNext();}});$('#armors-filter-select').on('change',function()
+{var $filter=0;var selected=$('#armors-filter-select').find('option:selected');if(selected.length>0)
+{$filter=selected.val();}
+var currentQuery=window.location.pathname+window.location.search;if(currentQuery.toString().indexOf('filter=')>-1)
+{var query_arg_regex;query_arg_regex=new RegExp('&filter=[^(?:&|$)]*','ig');currentQuery=currentQuery.replace(query_arg_regex,'&filter='+$filter);}
+else
+{currentQuery=currentQuery+'&filter='+$filter;}
+window.history.replaceState('Object','Title',currentQuery);if($lastSelectedCharacter!=''&&$lastSelectedCharacter!=0)
+{$this.WarcryArmorsets('applyFilter',{category:$filter,character:config.filter.character});}});$('#armorset-purchase-form').submit(function()
+{var charValue=$(this).children('#selected-character').val();var armorsetValue=$(this).children('#selected-armorset').val();if(charValue.length==0||charValue=='')
+{$.fn.WarcryAlertBox('open','<p>Unable to proceed, please select character.</p>');return false;}
+if(armorsetValue.length==0||parseInt(armorsetValue)==0)
+{$.fn.WarcryAlertBox('open','<p>Unable to proceed, please select armor set.</p>');return false;}
+$this.WarcryArmorsets('verifyAmount');return $IsReadyToComplete;});},changeConfig:function(options)
+{var config=$(this).data('WarcryArmorsets').config;if(typeof options.currentPage!='undefined')
+{config.currentPage=options.currentPage;}
+if(typeof options.totalPages!='undefined')
+{config.totalPages=options.totalPages;}
+if(typeof options.perPage!='undefined')
+{config.perPage=options.perPage;}
+if(typeof options.totalRecords!='undefined')
+{config.totalRecords=options.totalRecords;}
+if(typeof options.filter!='undefined')
+{config.filter=options.filter;}
+if(typeof options.realm!='undefined')
+{config.realm=options.realm;}
+if(typeof options.source!='undefined')
+{config.source=options.source;}},startLoading:function()
+{if($('#armorsets-container').css('display')=='block')
+{$('#armorsets-container').fadeOut('fast',function()
+{$('#armorsets_loading').LoadingBar('restart');$('#armorsets_loading').LoadingBar('state1');$('#armorsets_loading').fadeIn('slow',function()
+{WarcryQueue('ARMORSETS').goNext();});});}
+else
+{$('#armorsets_loading').LoadingBar('restart');$('#armorsets_loading').LoadingBar('state1');$('#armorsets_loading').fadeIn('slow',function()
+{WarcryQueue('ARMORSETS').goNext();});}},applyFilter:function(filter)
+{var $this=$(this);var $config=$this.data('WarcryArmorsets').config;var $category=filter.category;var $character=filter.character;WarcryQueue('ARMORSETS').add(function()
+{$this.WarcryArmorsets('startLoading');});WarcryQueue('ARMORSETS').add(function()
+{$.ajaxSetup({error:function(x,e)
+{if(x.status==408)
+{$this.WarcryArmorsets('applyFilter',filter);}
+else
+{console.log('Ajax error: '+x.status);}},dataType:"xml",});$.get("ajax.php?phase=6",{perPage:$config.perPage,category:$category,character:$character,realm:$config.realm,},function(data)
+{var $totalPages=$(data).find('totalPages').text();var $totalRecords=$(data).find('totalRecords').text();$('#armorsets-container').WarcryArmorsets('changeConfig',{currentPage:1,totalPages:$totalPages,totalRecords:$totalRecords,filter:{category:$category,character:$character},});WarcryQueue('ARMORSETS').goNext();});});WarcryQueue('ARMORSETS').add(function()
+{$this.WarcryArmorsets('loadPage','first');});WarcryQueue('ARMORSETS').goNext();},loadPage:function(page)
+{var $config=$(this).data('WarcryArmorsets').config;var $this=$(this);if($config.isLoading)
+{return false;}
+$config.isLoading=true;if(page=='first')
+{page=1;}
+else if(page=='prev')
+{page=$config.currentPage-1;}
+else if(page=='next')
+{page=$config.currentPage+1;}
+else if(page=='last')
+{page=$config.totalPages;}
+var $page=page;WarcryQueue('ARMORSETS').add(function()
+{$this.WarcryArmorsets('startLoading');});$.ajaxSetup({error:function(x,e)
+{if(x.status==408)
+{$this.WarcryArmorsets('loadPage',$page);}
+else
+{$config.isLoading=false;}},dataType:"xml",});WarcryQueue('ARMORSETS').add(function()
+{$.get("ajax.php?phase=5",{page:$page,perPage:$config.perPage,category:$config.filter.category,character:$config.filter.character,realm:$config.realm,},function(data)
+{var list=$(data).find('itemlist');var count=list.attr('count');$this.html('');if(parseInt(count)==0)
+{$this.html('<p class="noresults">There are no armor sets.</p>');}
+else
+{list.find('armorset').each(function(i,e)
+{var armorsetId=$(e).attr('id');var order=$(e).find('order').text();var html=$(e).find('html').text();$this.append(html);if(armorsetId==$lastClickedArmorset)
+{$('#armor-set-'+armorsetId+'-items').parent().addClass('armor-set-active');}
+$('#armor-set-'+armorsetId+'-items').parent().attr('armorset',armorsetId);$('#armor-set-'+armorsetId+'-items').parent().click(function()
+{$this.WarcryArmorsets('clickEvent',$(this));});WarcryQueue('ARMORSETS').add(function()
+{$('#armorsets-container').WarcryArmorsets('loadItems',{armorset:armorsetId,order:order,source:$config.source,pageItems:count});});});}
+WarcryQueue('ARMORSETS').add(function()
+{$('#armorsets_loading').fadeOut('slow',function()
+{$('#armorsets-container').fadeIn('slow');$config.isLoading=false;});});$('#armorsets-container').WarcryArmorsets('updatePagination',{page:$page,count:count});$config.currentPage=$page;WarcryQueue('ARMORSETS').goNext();});});WarcryQueue('ARMORSETS').goNext();},loadItems:function(options)
+{var $this=$(this);var $armorsetId=options.armorset;var $order=options.order;var $count=options.pageItems;if(typeof options.source=='undefined')
+{options.source='old';}
+var $source=options.source;var itemsStr=$('#armor-set-'+$armorsetId+'-items').html();itemsStr=itemsStr.replace(/\s/g,"");var items=itemsStr.split(',');$('#armor-set-'+$armorsetId+'-items').html("");$.ajaxSetup({error:function(x,e)
+{console.log('Parser Error.');},dataType:'json',});var $armset_itemsloop_i=0;for(i=0;i<items.length;i++)
+{var $items=items;WarcryQueue('ARMORSETS_'+$armorsetId).add(function()
+{var $entry=$items[$armset_itemsloop_i];$.ajax({url:"ajax.php?phase=1&entry="+$entry,dataType:'json',success:function(data)
+{var quality=data.quality_enus;var icon=data.icon;if(quality&&icon){$('#armor-set-'+$armorsetId+'-items').append('<a class="'+quality.toLowerCase()+'" href="http://cata.openwow.com/item='+$entry+'" rel="item='+$entry+'" style="background-image:url(http://wow.zamimg.com/images/wow/icons/medium/'+icon.toLowerCase()+'.jpg);" onclick="return false;"></a>');}
+else{$('#armor-set-'+$armorsetId+'-items').append('<a href="http://cata.openwow.com/item='+$entry+'" rel="item='+$entry+'" target="_blank"></a>');}
+WarcryQueue('ARMORSETS_'+$armorsetId).goNext();}});$armset_itemsloop_i++;});}
+WarcryQueue('ARMORSETS_'+$armorsetId).add(function()
+{if(typeof $count!='undefined'&&$order==$count)
+{$('#armorsets_loading').LoadingBar('state4');}
+else if($order==1)
+{$('#armorsets_loading').LoadingBar('state2');}
+else if($order==3)
+{$('#armorsets_loading').LoadingBar('state3');}
+else if($order==5)
+{$('#armorsets_loading').LoadingBar('state4');}
+WarcryQueue('ARMORSETS').goNext();});WarcryQueue('ARMORSETS_'+$armorsetId).goNext();},updatePagination:function(options)
+{var $config=$(this).data('WarcryArmorsets').config;var page=options.page;var count=options.count;var cont=$('#armorsets-pagination');var firstBtn=$('#pagination-nav-first',cont);var prevBtn=$('#pagination-nav-prev',cont);var nextBtn=$('#pagination-nav-next',cont);var lastBtn=$('#pagination-nav-last',cont);var info=$('#pages',cont);var offset=Math.ceil((parseInt(page)-1)*$config.perPage);if($('#armorsets-pagination').css('display')!='none')
+{WarcryQueue('STORE_NAVS').add(function()
+{$('#armorsets-pagination').fadeOut('fast',function()
+{WarcryQueue('STORE_NAVS').goNext();});});}
+WarcryQueue('STORE_NAVS').add(function()
+{var leftSep=false;var rightSep=false;if(page==1&&count==0)
+{return;}
+if(parseInt(page)<3)
+{firstBtn.css('display','none');}
+else
+{firstBtn.css('display','inline-block');leftSep=true;}
+if(parseInt(page)==1)
+{prevBtn.css('display','none');}
+else
+{prevBtn.css('display','inline-block');leftSep=true;}
+if(parseInt(page)==$config.totalPages)
+{nextBtn.css('display','none');}
+else
+{nextBtn.css('display','inline-block');rightSep=true;}
+if(parseInt(page)==$config.totalPages||(parseInt(page)+1)==$config.totalPages)
+{lastBtn.css('display','none');}
+else
+{lastBtn.css('display','inline-block');rightSep=true;}
+info.html((leftSep?'<p>|&nbsp;&nbsp;</p>':'')+offset+'-'+(parseInt(offset)+parseInt(count))+' of '+$config.totalRecords+(rightSep?'<p>&nbsp;&nbsp;|</p>':''));WarcryQueue('STORE_NAVS').goNext();});WarcryQueue('STORE_NAVS').add(function()
+{$('#armorsets-pagination').fadeIn('slow',function()
+{WarcryQueue('STORE_NAVS').goNext();});});WarcryQueue('STORE_NAVS').goNext();},clickEvent:function(element)
+{var ArmorSetId=$(element).attr('armorset');if(ArmorSetId==$lastClickedArmorset)
+{$(element).removeClass('armor-set-active');$lastClickedArmorset=0;$('#selected-armorset').val($lastClickedArmorset);$('#armorsets-info-title').html('<b>Please select a armor set.</b>');return;}
+else
+{$(this).find('.armor-set-active').removeClass('armor-set-active');}
+$(element).addClass('armor-set-active');$lastClickedArmorset=ArmorSetId;$('#selected-armorset').val($lastClickedArmorset);var price=$(element).find('#price').children('p').html();$SelectedArmorsetPrice=parseInt(price);if($lastSelectedCharacter==0)
+{$('#armorsets-info-title').html('<b>Please select a character.</b>');}
+else
+{$('#armorsets-info-title').html('<b>Ready to complete.</b>');}},verifyAmount:function()
+{var $this=$(this);var $config=$this.data('WarcryArmorsets').config;var $realm=$config.realm;var $gold=$SelectedArmorsetPrice;$.ajaxSetup({error:function(x,e)
+{if(x.status==408)
+{$this.WarcryStore('verifyAmount');}},dataType:"html",});$.get("ajax.php?phase=4",{silver:0,gold:$gold,realm:$realm,},function(data)
+{if(data=='OK')
+{$IsReadyToComplete=true;$('#armorset-purchase-form').submit();}
+else
+{$IsReadyToComplete=false;$.fn.WarcryAlertBox('open','<p>'+data+'</p>');}});},}
+$.fn.WarcryArmorsets=function(method)
+{if(methods[method])
+{return methods[method].apply(this,Array.prototype.slice.call(arguments,1));}
+else if(typeof method==='object'||!method)
+{return methods.init.apply(this,arguments);}
+else
+{$.error('Method '+method+' does not exist on jQuery.WarcryArmorsets');}};})(jQuery);

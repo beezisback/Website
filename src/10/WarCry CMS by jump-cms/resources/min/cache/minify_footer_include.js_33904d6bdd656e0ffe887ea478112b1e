@@ -1,0 +1,55 @@
+$(document).ready(function()
+{WarcryQueue('onload').goNext();$(document).find('select').each(function(index,element)
+{if(typeof $(element).attr('styled')!='undefined')
+{if($(element).attr('id')=='character-select')
+{$(element).SelectTransform({scrollConfig:{scrollBy:4,}});}
+else
+{$(element).SelectTransform();}}});});$(function()
+{if($('.vertical_center').length>0)
+{$('.vertical_center').each(function()
+{var parentHeight=$(this).parent().height();var height=$(this).outerHeight();$(this).css('position','relative');$(this).parent().css('height',(height+15)+'px');$(this).css({top:(parentHeight/2)+'px',marginTop:'-'+(height/2)+'px'});});}});function CenterSWFMovie(id)
+{$this=$('#'+id);if($this.length>0)
+{if(navigator.appName=='Microsoft Internet Explorer')
+{var $window=$(window);var $width=$window.width();var $height=$window.height();setInterval(function()
+{if(($width!=$window.width())||($height!=$window.height()))
+{$width=$window.width();$height=$window.height();if($this.css('position')!='absolute')
+{$this.css('position','absolute');}
+var windowWidth=$(window).width();var width=$this.width();if(windowWidth<=1024)
+{return;}
+$this.css({left:(windowWidth/2)+'px',marginLeft:'-'+(width/2)+'px'});}},100);}
+else
+{$(window).resize(function()
+{console.log('Resize!');if($this.css('position')!='absolute')
+{$this.css('position','absolute');}
+var windowWidth=$(window).width();var width=$this.width();if(windowWidth<=1024)
+{return;}
+$this.css({left:(windowWidth/2)+'px',marginLeft:'-'+(width/2)+'px'});});}}}
+if(navigator.userAgent.toLowerCase().indexOf("chrome")>=0)
+{$(window).load(function(){$('input:-webkit-autofill').each(function(){var text=$(this).val();var name=$(this).attr('name');$(this).after(this.outerHTML).remove();$('input[name='+name+']').val(text);});setTimeout(function()
+{$('input:-webkit-autofill').each(function(){var text=$(this).val();var name=$(this).attr('name');$(this).after(this.outerHTML).remove();$('input[name='+name+']').val(text);});},100);});}
+$(function()
+{if(!$CURUSER.isOnline)
+{$LoginBox.closeEvent=false;$('.member-side-left .not-logged-menu > li > a#login').on('click',function()
+{if(!$LoginBox.isLoaded)
+{$('body').append('<div id="Login-box_container" align="center"><div class="login-box-holder container_3"></div></div>');var windowWidth=$(window).innerWidth();var windowHeight=$(window).innerHeight();$('#Login-box_container').css({width:windowWidth+'px',height:windowHeight+'px'});var parentHeight=windowHeight;var height=$('#Login-box_container > .login-box-holder').height();$('#Login-box_container > .login-box-holder').css({top:(parentHeight/2)+'px',marginTop:'-'+(height/2)+'px'});$('#Login-box_container > .login-box-holder').on('mouseenter',function()
+{$LoginBox.closeEvent=false;});setTimeout(function()
+{$('#Login-box_container').on('click',function()
+{if($LoginBox.closeEvent)
+{$('#Login-box_container').fadeOut('fast');}});$(document).keyup(function(e)
+{if(e.keyCode==27)
+{if($('#Login-box_container').is(':visible'))
+{$('#Login-box_container').fadeOut('fast');}}});},1500);$('#Login-box_container').stop().animate({opacity:1},"fast",function()
+{$('#temp-login-form > .login-box').appendTo('#Login-box_container > .login-box-holder');$LoginBox.isLoaded=true;$LoginBox.closeEvent=true;$('#Login-box_container > .login-box-holder').on('mouseleave',function()
+{$LoginBox.closeEvent=true;});$('#js-login-box_urlbl').attr('value',window.location.href);});}
+else
+{$('#Login-box_container').stop().fadeIn('fast');}
+return false;});}});function setupLabel()
+{if($('.label_check input').length)
+{$('.label_check').each(function()
+{$(this).removeClass('c_on');});$('.label_check input:checked').each(function()
+{$(this).parent('label').addClass('c_on');});};if($('.label_radio input').length)
+{$('.label_radio').each(function()
+{$(this).removeClass('r_on');});$('.label_radio input:checked').each(function()
+{$(this).parent('label').addClass('r_on');});};};$(document).ready(function()
+{$('body').addClass('has-js');$('.label_check, .label_radio').click(function()
+{setupLabel();});setupLabel();});

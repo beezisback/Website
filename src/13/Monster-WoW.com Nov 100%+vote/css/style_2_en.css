@@ -1,0 +1,247 @@
+
+
+
+
+
+
+
+
+.forumbg {
+
+	background: #ebebeb none repeat-x 0 0;
+
+	margin-bottom: 4px;
+
+	padding: 0 5px;
+
+	clear: both;
+
+}
+
+
+
+
+
+
+.post:target .content {
+
+	color: #7dc8ef;
+
+}
+
+
+
+.post:target h3 a {
+
+	color: #7dc8ef;
+
+}
+
+
+
+.bg1	{ background-color: #ebf3ff;}
+
+.bg2	{ background-color: #dce8f3; }
+
+.bg3	{ background-color: #FFF; }
+
+
+
+.rowbg {
+
+	margin: 5px 5px 2px 5px;
+
+}
+
+
+
+
+
+
+
+table.table1 tbody tr:hover, table.table1 tbody tr.hover {
+
+	background-color: #FFF;
+
+	color: #000;
+
+}
+
+
+
+table.table1 td {
+
+	color: #6a6a6a;
+
+	font-size: 1.1em;
+
+}
+
+
+
+table.table1 tbody td {
+
+	padding: 5px;
+
+	border-top: 1px solid #FAFAFA;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+* html table, * html select, * html input { font-size: 100%; }
+
+* html hr { margin: 0; }
+
+* html span.corners-top, * html span.corners-bottom { background-image: url("./styles/Bl%40ck/theme/images/corners_left.gif"); }
+
+* html span.corners-top span, * html span.corners-bottom span { background-image: url("./styles/Bl%40ck/theme/images/corners_right.gif"); }
+
+
+
+table.table1 {
+
+	width: 99%;		/* IE < 6 browsers */
+
+	/* Tantek hack */
+
+	voice-family: "\"}\"";
+
+	voice-family: inherit;
+
+	width: 100%;
+
+}
+
+
+
+
+
+/* viewtopic fix */
+
+* html .post {
+
+	height: 25%;
+
+	overflow: hidden;
+
+}
+
+
+
+/* navbar fix */
+
+* html .clearfix, * html .navbar, ul.linklist {
+
+	height: 4%;
+
+	overflow: hidden;
+
+}
+
+
+
+/* Simple fix so forum and topic lists always have a min-height set, even in IE6
+
+	From http://www.dustindiaz.com/min-height-fast-hack */
+
+dl.icon {
+
+	min-height: 35px;
+
+	height: auto !important;
+
+	height: 35px;
+
+}
+
+
+
+* html li.row dl.icon dt {
+
+	height: 35px;
+
+	overflow: visible;
+
+}
+
+
+
+* html #search-box {
+
+	width: 25%;
+
+}
+
+
+
+/* Correctly clear floating for details on profile view */
+
+*:first-child+html dl.details dd {
+
+	margin-left: 30%;
+
+	float: none;
+
+}
+
+
+
+* html dl.details dd {
+
+	margin-left: 30%;
+
+	float: none;
+
+}
+
+
+
+* html .forumbg table.table1 {
+
+	margin: 0 -2px 0px -1px;
+
+}
+
+/*  	
+
+--------------------------------------------------------------
+
+Colours and backgrounds for common.css
+
+-------------------------------------------------------------- */
+
+
+
+
+
+
+
+.forabg {
+	border:1px solid #00308c;
+	background-color:#011329;
+	background-image: url("./styles/Bl%40ck/theme/images/bg_list.jpg");
+
+}
+
+
+
+.forumbg {
+	border:1px solid #00308c;
+	background-color:#011329;
+
+	background-image: url("./styles/Bl%40ck/theme/images/bg_header.jpg");
+
+}
+
+
+
+

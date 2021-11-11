@@ -1,0 +1,84 @@
+(function($)
+{$.fn.extend({blueberry:function(options)
+{var defaults={interval:5000,duration:500,lineheight:1,height:'auto',hoverpause:false,pager:true,nav:true,keynav:true};var options=$.extend(defaults,options);return this.each(function()
+{var o=options;var obj=$(this);$(this).data('slideLocked',false);var slides=$('.slides li',obj);var pager=$('.pager li',obj);var current=0;var next=current+1;var imgHeight=slides.eq(current).find('img').height();var imgWidth=slides.eq(current).find('img').width();var imgRatio=imgWidth/imgHeight;var sliderWidth=0;var cropHeight=0;slides.hide().eq(current).fadeIn(o.duration).addClass('active');if(pager.length)
+{pager.eq(current).addClass('active');}
+else if(o.pager)
+{obj.append('<ul class="pager"></ul>');slides.each(function(index)
+{$('.pager',obj).append('<li><a href="#"><span>'+index+'</span></a></li>')});pager=$('.pager li',obj);pager.eq(current).addClass('active');}
+if(pager)
+{$('a',pager).click(function()
+{clearTimeout(obj.play);next=$(this).parent().index();rotate();return false;});}
+var rotate=function()
+{if(obj.data('slideLocked'))
+return;obj.data('slideLocked',true);slides.eq(current).data('bb_current',current);slides.eq(current).data('bb_next',next);slides.eq(current).data('bb_duration',o.duration);slides.eq(current).data('bb_slides',slides);slides.eq(current).fadeOut(o.duration,function()
+{var current=$(this).data('bb_current')
+var next=$(this).data('bb_next');var duration=$(this).data('bb_duration');var slides=$(this).data('bb_slides');$(this).removeClass('active');slides.eq(next).fadeIn(duration).addClass('active').queue(function()
+{obj.data('slideLocked',false);rotateTimer();$(this).dequeue()});});if(pager)
+{pager.eq(current).removeClass('active').end().eq(next).addClass('active');}
+current=next;next=current>=slides.length-1?0:current+1;};var rotateTimer=function()
+{obj.play=setTimeout(function()
+{rotate();},o.interval);};rotateTimer();if(o.hoverpause)
+{slides.hover(function()
+{clearTimeout(obj.play);},function()
+{rotateTimer();});}
+var setsize=function()
+{sliderWidth=$('.slides',obj).width();cropHeight=Math.floor(((sliderWidth/imgRatio)/o.lineheight))*o.lineheight;};setsize();$(window).resize(function()
+{setsize();});if(o.keynav)
+{$(document).keyup(function(e)
+{switch(e.which)
+{case 39:case 32:clearTimeout(obj.play);rotate();break;case 37:clearTimeout(obj.play);next=current-1;rotate();break;}});}});}});})(jQuery);;$(document).ready(function()
+{WarcryQueue('onload').goNext();$(document).find('select').each(function(index,element)
+{if(typeof $(element).attr('styled')!='undefined')
+{if($(element).attr('id')=='character-select')
+{$(element).SelectTransform({scrollConfig:{scrollBy:4,}});}
+else
+{$(element).SelectTransform();}}});});$(function()
+{if($('.vertical_center').length>0)
+{$('.vertical_center').each(function()
+{var parentHeight=$(this).parent().height();var height=$(this).outerHeight();$(this).css('position','relative');$(this).parent().css('height',(height+15)+'px');$(this).css({top:(parentHeight/2)+'px',marginTop:'-'+(height/2)+'px'});});}});function CenterSWFMovie(id)
+{$this=$('#'+id);if($this.length>0)
+{if(navigator.appName=='Microsoft Internet Explorer')
+{var $window=$(window);var $width=$window.width();var $height=$window.height();setInterval(function()
+{if(($width!=$window.width())||($height!=$window.height()))
+{$width=$window.width();$height=$window.height();if($this.css('position')!='absolute')
+{$this.css('position','absolute');}
+var windowWidth=$(window).width();var width=$this.width();if(windowWidth<=1024)
+{return;}
+$this.css({left:(windowWidth/2)+'px',marginLeft:'-'+(width/2)+'px'});}},100);}
+else
+{$(window).resize(function()
+{console.log('Resize!');if($this.css('position')!='absolute')
+{$this.css('position','absolute');}
+var windowWidth=$(window).width();var width=$this.width();if(windowWidth<=1024)
+{return;}
+$this.css({left:(windowWidth/2)+'px',marginLeft:'-'+(width/2)+'px'});});}}}
+if(navigator.userAgent.toLowerCase().indexOf("chrome")>=0)
+{$(window).load(function(){$('input:-webkit-autofill').each(function(){var text=$(this).val();var name=$(this).attr('name');$(this).after(this.outerHTML).remove();$('input[name='+name+']').val(text);});setTimeout(function()
+{$('input:-webkit-autofill').each(function(){var text=$(this).val();var name=$(this).attr('name');$(this).after(this.outerHTML).remove();$('input[name='+name+']').val(text);});},100);});}
+$(function()
+{if(!$CURUSER.isOnline)
+{$LoginBox.closeEvent=false;$('.member-side-left .not-logged-menu > li > a#login').on('click',function()
+{if(!$LoginBox.isLoaded)
+{$('body').append('<div id="Login-box_container" align="center"><div class="login-box-holder container_3"></div></div>');var windowWidth=$(window).innerWidth();var windowHeight=$(window).innerHeight();$('#Login-box_container').css({width:windowWidth+'px',height:windowHeight+'px'});var parentHeight=windowHeight;var height=$('#Login-box_container > .login-box-holder').height();$('#Login-box_container > .login-box-holder').css({top:(parentHeight/2)+'px',marginTop:'-'+(height/2)+'px'});$('#Login-box_container > .login-box-holder').on('mouseenter',function()
+{$LoginBox.closeEvent=false;});setTimeout(function()
+{$('#Login-box_container').on('click',function()
+{if($LoginBox.closeEvent)
+{$('#Login-box_container').fadeOut('fast');}});$(document).keyup(function(e)
+{if(e.keyCode==27)
+{if($('#Login-box_container').is(':visible'))
+{$('#Login-box_container').fadeOut('fast');}}});},1500);$('#Login-box_container').stop().animate({opacity:1},"fast",function()
+{$('#temp-login-form > .login-box').appendTo('#Login-box_container > .login-box-holder');$LoginBox.isLoaded=true;$LoginBox.closeEvent=true;$('#Login-box_container > .login-box-holder').on('mouseleave',function()
+{$LoginBox.closeEvent=true;});$('#js-login-box_urlbl').attr('value',window.location.href);});}
+else
+{$('#Login-box_container').stop().fadeIn('fast');}
+return false;});}});function setupLabel()
+{if($('.label_check input').length)
+{$('.label_check').each(function()
+{$(this).removeClass('c_on');});$('.label_check input:checked').each(function()
+{$(this).parent('label').addClass('c_on');});};if($('.label_radio input').length)
+{$('.label_radio').each(function()
+{$(this).removeClass('r_on');});$('.label_radio input:checked').each(function()
+{$(this).parent('label').addClass('r_on');});};};$(document).ready(function()
+{$('body').addClass('has-js');$('.label_check, .label_radio').click(function()
+{setupLabel();});setupLabel();});

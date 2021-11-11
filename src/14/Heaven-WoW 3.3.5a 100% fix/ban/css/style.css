@@ -1,0 +1,72 @@
+/* This CSS file is written by Agger - Exception-gfx.comyr.com For Dispersion-wow.com
+Do not redistribute! */
+
+/* STYLES */
+
+a:link{
+color:#000;
+text-decoration:none;
+}
+
+a:visited{
+color:#000;
+text-decoration:none;
+}
+
+a:hover{
+color:#fff;
+text-decoration:underline;
+}
+
+a:active{
+color:#000;
+text-decoration:none;
+}
+
+body{
+background-color:#c1c1c1;
+}
+
+/* DIVS */
+
+#container{
+width:800px;
+margin-left:-400px;
+margin-top:100px;
+left:50%;
+position:absolute;
+background-color:#a9a9a9;
+}
+
+ul#desc{
+list-style:none;
+margin-left:100px;
+}
+
+ul#desc li{
+display:inline;
+}
+
+#list{
+margin-left:130px;
+}
+
+#copyright{
+margin-left:225px;
+}
+
+/* CLASSES */
+
+.desc{
+font-family:Bebas Neue;
+font-size:22px;
+color:#000;
+margin-right:150px;
+}
+
+.copyright{
+font-family:Arial;
+font-size:10px;
+color:#000;
+text-align:center;
+}
