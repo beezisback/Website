@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteRule ^index.wow$ /index.php [L]
+RewriteRule ^account.wow$ /quest.php [L]
+RewriteRule ^accounts.wow$ /account.wow?i=account [L]
+RewriteRule ^login.wow$ /account.wow?i=login [L]
+RewriteRule ^register.wow$ /account.wow?i=register [L]
+RewriteRule ^account_recovery.wow$ /account.wow?i=account_recovery [L]
+RewriteRule ^statistics.wow$ /account.wow?i=statistics [L]
+RewriteRule ^news.wow$ /account.wow?i=news [L]
+RewriteRule ^connection.wow$ /account.wow?i=connection [L]

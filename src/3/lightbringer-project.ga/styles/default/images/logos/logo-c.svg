@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 274.614 229">
+  <defs>
+    <style>
+      .a {
+        fill: url(#a);
+      }
+    </style>
+    <linearGradient id="a" data-name="Namnlös övertoning 40" x1="137.264" y1="12.499" x2="137.264" y2="216.7" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffcf00"/>
+      <stop offset="1" stop-color="#ff7f00"/>
+    </linearGradient>
+  </defs>
+  <title>endless-logo-c</title>
+  <polygon class="a" points="27.743 216.692 27.743 12.499 212.411 148.659 212.411 80.539 178.518 105.53 149.558 84.192 246.786 12.499 246.786 216.7 62.118 80.539 62.119 148.659 95.142 124.308 124.101 145.647 27.743 216.692"/>
+</svg>
